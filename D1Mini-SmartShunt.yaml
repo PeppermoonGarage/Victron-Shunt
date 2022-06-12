@@ -1,14 +1,14 @@
 esphome:
-  name: d1mini-2
+  name: d1mini-4-shunt
   platform: ESP8266
   board: d1_mini
 
 mqtt:                                                                                                 
-  broker: 192.168.1.101                                                                                  
+  broker: !secret MQTT_IP
   port: 1883                                                                                         
-  username: mqttuser
-  password: goodpassword
-  topic_prefix: d1mini-SmartShunt
+  username: !secret MQTT_User
+  password: !secret MQTT_Password
+  topic_prefix: d1mini-4-shunt
   
 # Enable logging
 logger:
@@ -29,110 +29,102 @@ substitutions:
   accuracy: "2"
 
 ota:
-  password: "eae798b8879353f1dc56ba8319e086fb"
+  password: "d89a5d9af658f8826e97bffeb4ca3f26"
 
 wifi:
   networks:
-  - ssid: "SSID-Name"
-    password: "SSID-Password"
-
+  - ssid: !secret NG24_wifi_ssid
+    password: !secret NG24_wifi_password
+  - ssid: !secret NG24_EXT_wifi_ssid
+    password: !secret NG24_EXT_wifi_password
+  - ssid: !secret Loaner1_wifi_ssid
+    password: !secret Loaner1_wifi_password
+  - ssid: !secret DonWood_wifi_ssid
+    password: !secret DonWood_wifi_password
+  - ssid: !secret Skyus_wifi_ssid
+    password: !secret Skyus_wifi_password
+  - ssid: !secret SenseNet_wifi_ssid
+    password: !secret SenseNet_wifi_password
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "D1Mini-2 Fallback Hotspot"
-    password: "reallygoodpassword"
+    ssid: "D1Mini-4-shunt Fallback Hotspot"
+    password: !secret Fallback_wifi_password
 
 captive_portal:
 
-time:
-  - platform: homeassistant
+web_server:
+
+#deep_sleep:
+#  id: deep_sleep_1
+#  run_duration: 120s
+#  sleep_duration: 1min 
+  
+#status_led:
+#  pin: GPIO2  
+
+#time:
+#  - platform: homeassistant
 
 uart:
   id: uart0
 #  tx_pin: D8  #D8 not used here
   rx_pin: D7
   baud_rate: 19200
-  stop_bits: 1
-  data_bits: 8
-  parity: NONE
   rx_buffer_size: 256
+  #On harness, Black wire is ground, white is TX from Shunt (RX on D1 Mini)  
 
 victron_smart_shunt:
   uart_id: uart0
 
 sensor:
-#  - platform: wifi_signal
-#    name: "${devicename} WiFi Signal Sensor"
-#    id: rssi_sensor
-#    update_interval: 15s
-
-#  - platform: template
-#    name: "Wifi Quality"
-#    unit_of_measurement: "%"
-#    accuracy_decimals: 0
-#    icon: "mdi:wifi"
-#    update_interval: 15s
-#    lambda: |-
-#        int quality;
-#        const int rssi = id(rssi_sensor).state;
-#          if (rssi <= -100) { quality = 0;}
-#          else if (rssi >= -50)
-#          {  quality = 100; }
-#          else
-#          {  quality = 2 * (rssi + 100); }
-#          return quality;
-#  - platform: uptime
-#    name: "${devicename} Uptime"
-#    id: uptime_s
-#    update_interval: 5s
-
   - platform: victron_smart_shunt
     battery_voltage:
-      name: "Battery Voltage"
-      id: bv
+      name: "Shunt Battery Voltage"
+      id: shunt_bv
       accuracy_decimals: ${accuracy}
 
     battery_current:
-      name: "Battery Current"
-      id: bc
+      name: "Shunt Battery Current"
+      id: shunt_battery_current
       accuracy_decimals: ${accuracy}
 
     fw_version:
-      name: "fw"
-      id: fw
+      name: "Shunt fw"
+      id: shunt_fw
 
     pid:
-      name: "pid"
-      id: pid
+      name: "Shunt pid"
+      id: shunt_pid
 
-    instantaneous_power:
-      name: "instantaneous power"
-      id: instantaneous_power
-      accuracy_decimals: ${accuracy}
+#    instantaneous_power:
+#      name: "instanteneous_power"
+#      id: instantaneous_power
+#      accuracy_decimals: ${accuracy}
 
     time_to_go:
-      name: "time to go"
-      id: time_to_go
+      name: "Shunt time to go"
+      id: shunt_time_to_go
 
     consumed_amp_hours:
-      name: "consumed amp hours"
-      id: consumed_amp_hours
+      name: "Shunt consumed amp hours"
+      id: shunt_consumed_amp_hours
       unit_of_measurement: Ah
       accuracy_decimals: ${accuracy}
 
     min_battery_voltage:
-      name: "Min battery voltage"
-      id: min_battery_voltage
+      name: "Shunt Min battery voltage"
+      id: shunt_min_battery_voltage
       accuracy_decimals: ${accuracy}
 
     max_battery_voltage:
-      name: "Max battery voltage"
-      id: max_battery_voltage
+      name: "Shunt Max battery voltage"
+      id: shunt_max_battery_voltage
       accuracy_decimals: ${accuracy}
 
     amount_of_charged:
-      name: "Amount of charged"
-      id: amount_of_charged
+      name: "Shunt Amount of charged"
+      id: shunt_amount_of_charged
       filters:
         - multiply: 0.001
       unit_of_measurement: kWh
@@ -147,31 +139,106 @@ sensor:
 #      id: bmv_pid
 
     last_full_charge:
-      name: "Time since last full charge"
-      id: last_full_charge
+      name: "Shunt Time since last full charge"
+      id: shunt_last_full_charge
 
     deepest_discharge:
-      name: "Depth of the deepest discharge"
-      id: deepest_discharge
+      name: "Shunt Depth of the deepest discharge"
+      id: shunt_deepest_discharge
       unit_of_measurement: Ah
       accuracy_decimals: ${accuracy}
 
     last_discharge:
-      name: "Depth of the last discharge"
-      id: last_discharge
+      name: "Shunt Depth of the last discharge"
+      id: shunt_last_discharge
       unit_of_measurement: Ah
       accuracy_decimals: ${accuracy}
 
     discharged_energy:
-      name: "Amount of discharged energy"
-      id: discharged_energy
+      name: "Shunt Amount of discharged energy"
+      id: shunt_discharged_energy
       filters:
         - multiply: 0.001
       unit_of_measurement: kWh
       accuracy_decimals: ${accuracy}
 
     state_of_charge:
-      id: state_of_charge
-      name: "SoC"
+      id: shunt_state_of_charge
+      name: "Shunt SoC"
   
+  
+font:
+  - file: "/config/fonts/DejaVuSansMono.ttf"
+    id: my_font_10
+    size: 10
+  - file: "/config/fonts/DejaVuSansMono.ttf"
+    id: my_font_20
+    size: 20    
+#  - file: '/usr/share/fonts/truetype/dejavu/arial.ttf'
+#    id: font3
+#    size: 14
 
+time:
+  - platform: sntp
+    id: sntp_time    
+    update_interval: 60s    
+    
+    
+i2c:
+  sda: D2
+  scl: D1
+  scan: false  
+  
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 64x48"
+    reset_pin: D0
+    address: 0x3C
+    id: my_display
+    
+    pages:
+      - id: page1
+        lambda: |-
+          it.printf(0, 0, id(my_font_10), "D1 Mini");
+          it.printf(0, 10, id(my_font_10), "4-Shunt");
+          it.strftime(0, 20, id(my_font_10), "%Y-%m-%d", id(sntp_time).now());          
+          it.strftime(0, 30, id(my_font_10), "%H:%M:%S", id(sntp_time).now());
+#          it.printf(0, 10, id(my_font), "MH T: %s", id(MH_Temp).state.c_str());
+#          it.print(0, 20, id(my_font), "Fine!");
+#          it.strftime(0, 20, id(my_font), "%Y-%m-%d", id(esptime).now());     
+#          it.strftime(0, 30, id(my_font), "%H:%M:%S", id(esptime).now());          
+#         it.print(0, 30, id(my_font), "Fine!");    
+#          it.print(0, 30, id(my_font), "%Y-%m-%d %H:%M");          
+      - id: page2
+        lambda: |-
+          it.printf(0, 0, id(my_font_10), "State of");    
+          it.printf(0, 10, id(my_font_10), "Charge");            
+          it.printf(0, 20, id(my_font_20), "%.2f", id(shunt_state_of_charge).state);
+      - id: page3
+        lambda: |-
+          it.printf(0, 0, id(my_font_10), "Battery");    
+          it.printf(0, 10, id(my_font_10), "Current");            
+          it.printf(0, 20, id(my_font_20), "%.2f", id(shunt_battery_current).state);          
+#          it.print(0, 10, id(my_font), "Whats Up?!");    
+#      - id: page3
+#        lambda: |-
+#          it.print(0, 10, id(my_font), "Bro!");          
+interval:
+  - interval: 3s
+    then:
+      - display.page.show_next: my_display
+      - component.update: my_display
+#      - component.update: homeassistant_time
+#  - interval: 1min
+#    then:
+#      - lambda: |-
+#          id(my_display).turn_off();
+#      - delay: 5s
+#      - lambda: |-
+#          id(my_display).turn_on();
+#      - deep_sleep.enter:
+#        id: deep_sleep_20min
+#        sleep_duration: 1min
+
+
+    
