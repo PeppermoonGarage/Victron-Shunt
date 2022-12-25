@@ -29,7 +29,7 @@ substitutions:
   accuracy: "2"
 
 ota:
-  password: "d89a5d9af658f8826e97bffeb4ca3f26"
+  password: "OTA_Password"
 
 wifi:
   networks:
@@ -46,17 +46,6 @@ wifi:
 captive_portal:
 
 web_server:
-
-#deep_sleep:
-#  id: deep_sleep_1
-#  run_duration: 120s
-#  sleep_duration: 1min 
-  
-#status_led:
-#  pin: GPIO2  
-
-#time:
-#  - platform: homeassistant
 
 uart:
   id: uart0
@@ -122,14 +111,6 @@ sensor:
       unit_of_measurement: kWh
       accuracy_decimals: ${accuracy}
 
-#    bmv_alarm_text:
-#      name: "BMV alarm"
-#      id: bmv_alarm
-
-#    bmv_text:
-#      name: "bmv - text"
-#      id: bmv_pid
-
     last_full_charge:
       name: "Shunt Time since last full charge"
       id: shunt_last_full_charge
@@ -166,9 +147,6 @@ font:
   - file: "/config/fonts/DejaVuSansMono.ttf"
     id: my_font_20
     size: 20    
-#  - file: '/usr/share/fonts/truetype/dejavu/arial.ttf'
-#    id: font3
-#    size: 14
 
 time:
   - platform: sntp
@@ -195,12 +173,6 @@ display:
           it.printf(0, 10, id(my_font_10), "4-Shunt");
           it.strftime(0, 20, id(my_font_10), "%Y-%m-%d", id(sntp_time).now());          
           it.strftime(0, 30, id(my_font_10), "%H:%M:%S", id(sntp_time).now());
-#          it.printf(0, 10, id(my_font), "MH T: %s", id(MH_Temp).state.c_str());
-#          it.print(0, 20, id(my_font), "Fine!");
-#          it.strftime(0, 20, id(my_font), "%Y-%m-%d", id(esptime).now());     
-#          it.strftime(0, 30, id(my_font), "%H:%M:%S", id(esptime).now());          
-#         it.print(0, 30, id(my_font), "Fine!");    
-#          it.print(0, 30, id(my_font), "%Y-%m-%d %H:%M");          
       - id: page2
         lambda: |-
           it.printf(0, 0, id(my_font_10), "State of");    
@@ -211,26 +183,13 @@ display:
           it.printf(0, 0, id(my_font_10), "Battery");    
           it.printf(0, 10, id(my_font_10), "Current");            
           it.printf(0, 20, id(my_font_20), "%.2f", id(shunt_battery_current).state);          
-#          it.print(0, 10, id(my_font), "Whats Up?!");    
-#      - id: page3
-#        lambda: |-
-#          it.print(0, 10, id(my_font), "Bro!");          
+     
 interval:
   - interval: 3s
     then:
       - display.page.show_next: my_display
       - component.update: my_display
-#      - component.update: homeassistant_time
-#  - interval: 1min
-#    then:
-#      - lambda: |-
-#          id(my_display).turn_off();
-#      - delay: 5s
-#      - lambda: |-
-#          id(my_display).turn_on();
-#      - deep_sleep.enter:
-#        id: deep_sleep_20min
-#        sleep_duration: 1min
+
 
 
     
